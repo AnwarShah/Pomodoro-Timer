@@ -1,7 +1,7 @@
 body {
   background-color: #333333;
   color: #FFFFFF;
-  font-family: 'Segoe UI', 'Verdana', 'sans-serif';
+  font-family: 'Open Sans', 'Verdana', 'sans-serif';
   font-weight: lighter;
   h1, h2, h3, h4, h5, h6 {
     font-weight: lighter;
@@ -36,7 +36,12 @@ body {
   @include timer-adjust;
 }
 
+@mixin clickable-button{
+  cursor: pointer;
+}
+
 #time-display {
+  @include clickable-button;
   display: block;
   margin: 30px auto;
   height: 300px;
@@ -44,9 +49,23 @@ body {
   border: 2px solid #96C801;
   border-radius: 50%;
   h1 {
-    font-size: 4em;
+    font-size: 3.5em;
     position: relative;
-    margin-top: 60px;
     text-align: center;
   }
+  h1#current-state{
+    margin-top: 60px;
+  }
+  h1#running-time{
+    font-size: 4.5em;
+    margin-top: 65px;
+  }
+}
+
+.minus-sign {
+  @include clickable-button;
+}
+
+.plus-sign{
+  @include clickable-button;
 }
