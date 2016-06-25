@@ -38,6 +38,7 @@ body {
 
 @mixin clickable-button{
   cursor: pointer;
+  display: inline-block;
 }
 
 #time-display {
