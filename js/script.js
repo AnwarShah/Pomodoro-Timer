@@ -6,6 +6,10 @@ var timer = {
   timeoutId: null,
   sessionType: 'session' , //initially session, can be 'session' or 'break'
 
+  // will be used to update time while in paused state
+  setTime: function(time){
+    this.time = time;
+  },
   startTimer: function(time, sessionType){
     this.time = time;
     this.sessionType = sessionType;
@@ -90,6 +94,7 @@ $(document).ready(function() {
     var node = $(this).next();
     var newTime = parseInt(node.text(), 10) - 1;
     node.text(newTime);
+    timer.setTime(newTime);
     updateBigDisplay($(this), newTime);
   });
 
@@ -99,6 +104,7 @@ $(document).ready(function() {
     var node = $(this).prev();
     var newTime = parseInt(node.text(), 10) + 1
     node.text(newTime);
+    timer.setTime(newTime);
     updateBigDisplay($(this), newTime);
   });
 
