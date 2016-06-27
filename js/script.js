@@ -1,12 +1,13 @@
+// global variable for quicker accessing timer
+var timerDisplay = null; // will be set when document is ready
+
 var timer = {
   timerRunning: false,
   timeoutId: null,
-  timerDisplay: null,
   sessionType: 'session' , //initially session, can be 'session' or 'break'
-  setTimer: function(time, timerDisplay, sessionType){
+  setTimer: function(time, sessionType){
     this.sessionType = sessionType;
     this.timerRunning = true;
-    this.timerDisplay = timerDisplay;
     this.timeoutId = setInterval(function(){
       time = time - 1;
       if( time <= 0 ) {
@@ -23,7 +24,7 @@ var timer = {
     return this.timerRunning;
   },
   displayTime: function(time) {
-    this.timerDisplay.text(time);
+    timerDisplay.text(time);
   },
   isSession: function(){
     return this.sessionType == 'session';
@@ -38,7 +39,7 @@ function readTime() {
 }
 
 function updateTime(time) {
-  $('#running-time').text(time);
+  timerDisplay.text(time);
 }
 
 function updateBigDisplay(clickedNode, time){
@@ -51,7 +52,7 @@ function updateBigDisplay(clickedNode, time){
 }
 
 $(document).ready(function() {
-  var timerDisplay = $('#running-time');
+  timerDisplay = $('h1#running-time'); // set display
 
   // time decrement handler
   $('span.minus-sign').click(function(){
@@ -76,7 +77,7 @@ $(document).ready(function() {
       timer.stopTimer()
     } else {
       time = readTime();
-      timer.setTimer(time, timerDisplay, 'session');
+      timer.setTimer(time, 'session');
     }
   });
 });
