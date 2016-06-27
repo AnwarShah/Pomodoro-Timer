@@ -34,7 +34,7 @@ var timer = {
       this.startOtherSession();
     } else { // timer is paused
       this.timerPaused = true;
-      this.pausedAt = this.time;
+      this.pausedAt = this.time - 1;
     }
   },
   isRunning: function(){
