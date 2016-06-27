@@ -10,18 +10,19 @@ var timer = {
   setTime: function(time){
     this.time = time;
   },
+  countDown: function(){
+    timer.time = timer.time - 1;
+    if( timer.time <= 0 ) {
+      timer.stopTimer(true);
+    }
+    timer.displayTime();
+  },
   startTimer: function(time, sessionType){
     this.time = time;
     this.sessionType = sessionType;
     this.timerRunning = true;
     updateSessionType(this.sessionType);
-    this.timeoutId = setInterval(function(){
-      timer.time = timer.time - 1;
-      if( timer.time <= 0 ) {
-        timer.stopTimer(true);
-      }
-      timer.displayTime();
-    }, 1000)
+    this.timeoutId = setInterval(this.countDown, 1000)
   },
   pauseTimer: function(){
     this.stopTimer(false); // false indicate not finished counting
@@ -85,6 +86,12 @@ function updateBigDisplay(clickedNode, time){
   }
 }
 
+function reflectTimeUpdate(time, displayNode, clickedNode) {
+  displayNode.text(time);
+  timer.setTime(time);
+  updateBigDisplay(clickedNode, time);
+}
+
 $(document).ready(function() {
   timerDisplay = $('h1#running-time'); // set display
 
@@ -93,9 +100,7 @@ $(document).ready(function() {
     if (timer.isRunning()) return; // do nothing
     var node = $(this).next();
     var newTime = parseInt(node.text(), 10) - 1;
-    node.text(newTime);
-    timer.setTime(newTime);
-    updateBigDisplay($(this), newTime);
+    reflectTimeUpdate(newTime, node, $(this));
   });
 
   // time increment handler
@@ -103,9 +108,7 @@ $(document).ready(function() {
     if (timer.isRunning()) return; // do nothing
     var node = $(this).prev();
     var newTime = parseInt(node.text(), 10) + 1
-    node.text(newTime);
-    timer.setTime(newTime);
-    updateBigDisplay($(this), newTime);
+    reflectTimeUpdate(newTime, node, $(this));
   });
 
   $('#time-display').click(function() {
