@@ -8,6 +8,7 @@ var timer = {
   startTimer: function(time, sessionType){
     this.sessionType = sessionType;
     this.timerRunning = true;
+    updateSessionType(this.sessionType);
     this.timeoutId = setInterval(function(){
       time = time - 1;
       if( time <= 0 ) {
@@ -44,6 +45,12 @@ var timer = {
 function readTime(sessionType) {
   var id = sessionType == 'session' ? '#pomodoro-timer' : '#break-timer';
   return $('div'+id).find('span.time').text();
+}
+
+function updateSessionType(sessionType){
+  var currentState = $('div#time-display').children('h1#current-state');
+  var text = sessionType == 'session' ? 'Session' : 'Break!';
+  currentState.text(text);
 }
 
 function updateTime(time) {
