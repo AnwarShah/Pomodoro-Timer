@@ -5,7 +5,6 @@ var timer = {
   timerRunning: false,
   timeoutId: null,
   sessionType: 'session' , //initially session, can be 'session' or 'break'
-  pausedAt: null, // to mark the time paused at to resume
 
   startTimer: function(time, sessionType){
     this.time = time;
@@ -34,7 +33,6 @@ var timer = {
       this.startOtherSession();
     } else { // timer is paused
       this.timerPaused = true;
-      this.pausedAt = this.time - 1;
     }
   },
   isRunning: function(){
