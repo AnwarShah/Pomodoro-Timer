@@ -5,20 +5,22 @@ var timer = {
   timerRunning: false,
   timeoutId: null,
   sessionType: 'session' , //initially session, can be 'session' or 'break'
-  setTimer: function(time, sessionType){
+  startTimer: function(time, sessionType){
     this.sessionType = sessionType;
     this.timerRunning = true;
     this.timeoutId = setInterval(function(){
       time = time - 1;
       if( time <= 0 ) {
-        timer.stopTimer();
+        timer.stopTimer(true);
       }
       timer.displayTime(time);
     }, 1000)
   },
-  stopTimer: function() {
+  stopTimer: function(finishedCurrentSession = false) {
     clearInterval(this.timeoutId);
     this.timerRunning = false;
+    // start alternate session if current session finished gracefully
+    if(finishedCurrentSession === true) this.startOtherSession();
   },
   isRunning: function(){
     return this.timerRunning;
@@ -32,10 +34,16 @@ var timer = {
   isBreak: function(){
     return this.sessionType == 'break';
   },
+  startOtherSession: function(){
+    this.sessionType = this.sessionType == 'session' ? 'break' : 'session'; //alternate
+    var sessionTime = readTime(this.sessionType);
+    this.startTimer(sessionTime, this.sessionType);
+  }
 };
 
-function readTime() {
-  return $('#pomodoro-timer').find('span.time').text();
+function readTime(sessionType) {
+  var id = sessionType == 'session' ? '#pomodoro-timer' : '#break-timer';
+  return $('div'+id).find('span.time').text();
 }
 
 function updateTime(time) {
@@ -76,8 +84,8 @@ $(document).ready(function() {
     if (timer.isRunning()) {
       timer.stopTimer()
     } else {
-      time = readTime();
-      timer.setTimer(time, 'session');
+      time = readTime('session');
+      timer.startTimer(time, 'session');
     }
   });
 });
