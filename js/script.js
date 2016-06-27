@@ -5,29 +5,46 @@ var timer = {
   timerRunning: false,
   timeoutId: null,
   sessionType: 'session' , //initially session, can be 'session' or 'break'
+  pausedAt: null, // to mark the time paused at to resume
+
   startTimer: function(time, sessionType){
+    this.time = time;
     this.sessionType = sessionType;
     this.timerRunning = true;
     updateSessionType(this.sessionType);
     this.timeoutId = setInterval(function(){
-      time = time - 1;
-      if( time <= 0 ) {
+      timer.time = timer.time - 1;
+      if( timer.time <= 0 ) {
         timer.stopTimer(true);
       }
-      timer.displayTime(time);
+      timer.displayTime();
     }, 1000)
+  },
+  pauseTimer: function(){
+    this.stopTimer(false); // false indicate not finished counting
+  },
+  resumeTimer: function(){
+    this.startTimer(this.time, this.sessionType); // start paused session.
   },
   stopTimer: function(finishedCurrentSession = false) {
     clearInterval(this.timeoutId);
     this.timerRunning = false;
     // start alternate session if current session finished gracefully
-    if(finishedCurrentSession === true) this.startOtherSession();
+    if(finishedCurrentSession === true) {
+      this.startOtherSession();
+    } else { // timer is paused
+      this.timerPaused = true;
+      this.pausedAt = this.time;
+    }
   },
   isRunning: function(){
     return this.timerRunning;
   },
-  displayTime: function(time) {
-    timerDisplay.text(time);
+  isPaused: function(){
+    return this.timerPaused;
+  },
+  displayTime: function() {
+    timerDisplay.text(this.time);
   },
   isSession: function(){
     return this.sessionType == 'session';
@@ -89,8 +106,10 @@ $(document).ready(function() {
 
   $('#time-display').click(function() {
     if (timer.isRunning()) {
-      timer.stopTimer()
-    } else {
+      timer.pauseTimer();
+    } else if(timer.isPaused()){
+      timer.resumeTimer();
+    }else {
       time = readTime('session');
       timer.startTimer(time, 'session');
     }
