@@ -1,6 +1,14 @@
 // global variable for quicker accessing timer
 var timerDisplay = null; // will be set when document is ready
 
+// function which converts secons into mm:ss format
+function formattedTime(seconds){
+  var minute = parseInt(seconds / 60, 10);
+  var seconds = seconds % 60
+  seconds = seconds > 9 ? seconds : '0' + seconds;
+  return (minute + ":" + seconds);
+}
+
 var timer = {
   timerRunning: false,
   timeoutId: null,
@@ -8,7 +16,7 @@ var timer = {
 
   // will be used to update time while in paused state
   setTime: function(time){
-    this.time = time;
+    this.time = time * 60; // time is in minute. so convert it to seconds
   },
   countDown: function(){
     timer.time = timer.time - 1;
@@ -18,7 +26,7 @@ var timer = {
     timer.displayTime();
   },
   startTimer: function(time, sessionType){
-    this.time = time;
+    this.setTime(time);
     this.sessionType = sessionType;
     this.timerRunning = true;
     updateSessionType(this.sessionType);
@@ -47,7 +55,7 @@ var timer = {
     return this.timerPaused;
   },
   displayTime: function() {
-    timerDisplay.text(this.time);
+    timerDisplay.text(formattedTime(this.time));
   },
   isSession: function(){
     return this.sessionType == 'session';
